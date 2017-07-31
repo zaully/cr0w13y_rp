@@ -31,6 +31,13 @@ function showWeaponShopMenu(show)
         end
       end)
 
+      TriggerEvent("GUI:Option", "M1911", function(cb)
+        if(cb) then
+          TriggerServerEvent('cr:buyWeapon', 'WEAPON_HEAVYPISTOL')
+        else
+        end
+      end)
+
       TriggerEvent("GUI:Update")
     end
 end
@@ -56,7 +63,6 @@ Citizen.CreateThread(function()
   local shopOpen = false
   while true do
     Wait(0)
-
     local myPos = GetEntityCoords(GetPlayerPed(-1), true)
     for _,v in ipairs(weaponShops)do
       if Vdist(myPos.x, myPos.y, myPos.z, v.x, v.y, v.z) < 10.0 then
@@ -67,6 +73,8 @@ Citizen.CreateThread(function()
             shopOpen = not shopOpen
           end
           showWeaponShopMenu(shopOpen)
+        else
+          shopOpen = false
         end
       end
     end

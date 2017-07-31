@@ -83,22 +83,20 @@ AddEventHandler('cr:buyWeapon', function(weaponTag)
 
   if kWeaponPrices[weaponTag] then
       if weaponsOwned[identifier][weaponTag] == nil then
-        
-        -- just give the weapon
-        weaponsOwned[identifier][weaponTag] = true
-        TriggerClientEvent('cr:giveWeapon', source, weaponTag)
-        return
         -- check money
---        if user.getMoney() >= kWeaponPrices[weaponTag] then
---          user.removeMoney(kWeaponPrices[weaponTag])
---          TriggerClientEvent('cr:notify', source, 'Thank you for your purchase!', "CHAR_MILSITE", "Warstock Cache & Carry", "Weapon Purschase")
---          TriggerClientEvent('cr:giveWeapon', source, weaponTag)
---          weaponsOwned[source][weaponTag] = true
---          return
---        end
-        
+        TriggerEvent('cr:spendMoney', identifier, kWeaponPrices[weaponTag], function(result)
+--          if result == rok then
+--            TriggerClientEvent('cr:notify', source, 'Thank you for your purchase!', "CHAR_MILSITE", "Warstock Cache & Carry", "Weapon Purschase")
+--            TriggerClientEvent('cr:giveWeapon', source, weaponTag)
+--            weaponsOwned[source][weaponTag] = true
+--            return
+--          end
+        end)
+        -- just give the weapon
+--        weaponsOwned[identifier][weaponTag] = true
+--        TriggerClientEvent('cr:giveWeapon', source, weaponTag)
+--        return
       else
-        
         -- just give the weapon
         TriggerClientEvent('cr:giveAmmo', source, weaponTag)
         return

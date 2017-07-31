@@ -84,7 +84,7 @@ if constDebugOn {
         for k, v in ipairs(keysMap)
         if IsControlJustPressed(1, v)  then
           notifyPlayer(k .. " just pressed")
-          Citizen.Wait(1)
+          Citizen.Wait(2)
         end
       end
   end)

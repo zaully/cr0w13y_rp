@@ -7,24 +7,10 @@ AddEventHandler('playerSpawned', function(spawn)
     end
 end)
 
-RegisterNetEvent('cr:movePlayer')
-AddEventHandler('cr:movePlayer', function(posMap)
-    local ped = GetPlayerPed(-1)
-    SetEntityCoords(ped, posMap.x, posMap.y, posMap.z, 1, 0, 0, 1)
-end)
-
 RegisterNetEvent('cr:notify')
 AddEventHandler('cr:notify', function(str, img, title, subtitle)
   CreateNotification(str, img, title, subtitle)
 end)
-
-function updateCoordsToServer()
-  local ped = GetPlayerPed(-1)
-  local pos = GetEntityCoords(ped, true)
-  x, y, z = table.unpack(pos)
-  local h = GetEntityHeading(ped)
-  TriggerServerEvent("cr:playerLocationUpdated", {['x'] = x, ['y'] = y, ['z'] = z, ['h'] = h})
-end
 
 local function CreateNotification(str, img, title, subtitle)
   SetNotificationTextEntry("STRING")
@@ -35,9 +21,8 @@ local function CreateNotification(str, img, title, subtitle)
   DrawNotification(false, false)
 end
 
-Citizen.CreateThread(function ()
-  while true do
-    Citizen.Wait(15000)
-    updateCoordsToServer()
-  end
-end)
+function notifyPlayer(text)
+  SetNotificationTextEntry('STRING')
+  AddTextComponentString(text)
+  DrawNotification(false, false)
+end

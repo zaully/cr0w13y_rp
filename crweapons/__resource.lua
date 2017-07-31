@@ -10,5 +10,6 @@ client_scripts {
 
 server_scripts {
   'server/server_gunshops.lua',
+  '@crmoney/server/money_enums.lua',
   '@mysql-async/lib/MySQL.lua'
 }
