@@ -11,6 +11,7 @@ client_scripts {
 
 server_scripts {
   'config/server_config.lua',
+  'server/money_enums.lua',
   'server/money_manager.lua',
   '@crbase/server/base.lua',
   '@mysql-async/lib/MySQL.lua'
