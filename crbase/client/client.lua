@@ -9,9 +9,10 @@ end)
 
 RegisterNetEvent('cr:notify')
 AddEventHandler('cr:notify', function(str, img, title, subtitle)
-  CreateNotification(str, img, title, subtitle)
+  notifyPlayer(str)
 end)
 
+-- failing for some reasons.
 local function CreateNotification(str, img, title, subtitle)
   SetNotificationTextEntry("STRING")
   AddTextComponentSubstringPlayerName(str)

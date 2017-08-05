@@ -29,7 +29,6 @@ function updateCacheAndDBMoney(identifier, cashAmountAdjustment, bankAmountAdjus
     if math.abs(cache.cash - db.cash) + math.abs(cache.bank - db.bank) > 500 then
       db.cash = cache.cash
       db.bank = cache.bank
-      debugp("should save...")
       savePlayerMoney(identifier, db)
     end
     return true

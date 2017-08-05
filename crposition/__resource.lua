@@ -9,6 +9,7 @@ server_scripts {
   'config/server_config.lua',
   'server/client_event_handler.lua',
   'server/position_manager.lua',
+  '@crmoney/server/money_enums.lua',
   '@crbase/server/base.lua',
   '@mysql-async/lib/MySQL.lua'
 }
