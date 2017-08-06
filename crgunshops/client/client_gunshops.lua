@@ -3,7 +3,10 @@ local weaponShops = {
   {['x'] = 21.70, ['y'] = -1107.41, ['z'] = 29.79, illegal = false}
 }
 
-weaponShopOpen = false
+local weaponPrices = {}
+-- key = [name, price in legal stores (-1 means unavailable), price in illegal stores, price for ammo in legal stores, price for ammo in illegal stores, ammo per purchase]
+
+local shopOpen = false
 
 -- draw gunshop blips
 Citizen.CreateThread(function()
@@ -20,27 +23,39 @@ Citizen.CreateThread(function()
   return
 end)
 
-function showWeaponShopMenu(show)
+function ShowWeaponShopMenu(show, illegal)
     if(show) then
       TriggerEvent("GUI:Title", "Guns and Ammo")
-
-      TriggerEvent("GUI:Option", "M92", function(cb)
-        if(cb) then
-          TriggerServerEvent('cr:buyWeapon', 'WEAPON_PISTOL')
-        else
+      local limit = 0
+      for k, info in pairs(weaponPrices) do
+        if limit > 10 then -- can't handle all entries
+          break
         end
-      end)
-
-      TriggerEvent("GUI:Option", "M1911", function(cb)
-        if(cb) then
-          TriggerServerEvent('cr:buyWeapon', 'WEAPON_HEAVYPISTOL')
-        else
+        if illegal or info[2] > -1 then
+          local weaponPrice
+          if illegal then
+            weaponPrice = info[3]
+          else
+            weaponPrice = info[2]
+          end 
+          TriggerEvent("GUI:Option", info[1] .. "($" .. weaponPrice .. ")", function(cb)
+            if(cb) then
+              TriggerServerEvent('cr:buyWeapon', k, illegal)
+            end
+          end)
+          limit = limit + 1
         end
-      end)
+      end
+      logged = true
 
       TriggerEvent("GUI:Update")
     end
 end
+
+RegisterNetEvent('cr:receiveWeaponPrices')
+AddEventHandler('cr:receiveWeaponPrices', function(prices)
+  weaponPrices = prices
+end)
 
 RegisterNetEvent('cr:removeAllWeapons')
 AddEventHandler('cr:removeAllWeapons', function()
@@ -64,12 +79,12 @@ function drawGunshopInteraction()
   for _,v in ipairs(weaponShops)do
     if Vdist(myPos.x, myPos.y, myPos.z, v.x, v.y, v.z) < 10.0 then
       DrawMarker(1, v.x, v.y, v.z - 1, 0, 0, 0, 0, 0, 0, 1.0001, 1.0001, 1.5001, 255, 255, 255,155, 0,0, 0,0)
-      if Vdist(myPos.x, myPos.y, myPos.z, v.x, v.y, v.z) < 2.0 then
+      if Vdist(myPos.x, myPos.y, myPos.z, v.x, v.y, v.z) < 2.0 then 
         DisplayHelpText("Press ~INPUT_CONTEXT~ to open the weapon store")
         if IsControlJustPressed(1, 51) then
           shopOpen = not shopOpen
         end
-        showWeaponShopMenu(shopOpen)
+        ShowWeaponShopMenu(shopOpen, v.illegal)
       else
         shopOpen = false
       end
@@ -78,7 +93,6 @@ function drawGunshopInteraction()
 end
 
 Citizen.CreateThread(function()
-  local shopOpen = false
   while true do
     Wait(0)
     drawGunshopInteraction()
