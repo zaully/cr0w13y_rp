@@ -24,7 +24,6 @@ local function SavePlayerWeaponInventory(identifier, carried)
 end
 
 local function StreamWeaponPrices(src)
-  debugp(kWeaponPrices["WEAPON_PISTOL"][1] .. " streamed")
   TriggerClientEvent('cr:receiveWeaponPrices', src, kWeaponPrices)
 end
 
@@ -40,8 +39,8 @@ end
 
 AddEventHandler('ws:giveweapons', function(src)
     TriggerClientEvent('cr:removeAllWeapons', src)
+    local identifier = getPlayerIDFromSource(src)
     if carriedWeapons[identifier] then
-      local identifier = getPlayerIDFromSource(src)
       for k, v in pairs(carriedWeapons[identifier]) do
         carriedWeapons[identifier][k] = v
         TriggerClientEvent('cr:giveAmmo', src, k, v)

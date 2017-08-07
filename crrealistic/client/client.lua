@@ -1,5 +1,6 @@
 local currentWeapon = nil
 local weaponDrewAt = nil
+local hashToModel = {}
 
 function DisplayHelpText(str)
   BeginTextCommandDisplayHelp("STRING")
@@ -20,9 +21,13 @@ function RunDrawingSpeedChecks()
     currentWeapon = weapon
     DisablePlayerFiring(ped, true)
   else
-    local currentTime = GetGameTimer()
-    DisplayHelpText(currentWeapon)
-    if currentTime - weaponDrewAt < 1000 then
+    local drawingTime = hashToModel[currentWeapon]
+    if drawingTime then
+      local currentTime = GetGameTimer()
+      if currentTime - weaponDrewAt < drawingTime then
+        DisablePlayerFiring(ped, true)
+      end
+    else
       DisablePlayerFiring(ped, true)
     end
   end
@@ -33,4 +38,15 @@ Citizen.CreateThread(function()
     Wait(0)
     RunDrawingSpeedChecks()
   end
+end)
+
+local firstSpawn = true
+AddEventHandler('playerSpawned', function(spawn)
+    if firstSpawn then
+      for k, v in pairs(kWeaponsHandling) do
+        local hash = GetHashKey(k)
+        hashToModel[hash] = v
+      end
+      firstSpawn = false
+    end
 end)
